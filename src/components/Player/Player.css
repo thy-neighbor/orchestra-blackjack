@@ -8,5 +8,18 @@
 .Player__Cards{
     display: flex;
     gap: 15px;
+    max-width: 65%;
+    flex-wrap: wrap;
+}
 
+.Player__Value{
+    font-size: 20px;
+}
+
+
+.Player__Button__Container{
+    display: flex;
+    flex-direction: column;
+    margin-top: 30px;
+    gap: 15px;
 }

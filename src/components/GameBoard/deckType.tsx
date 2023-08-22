@@ -1,5 +1,5 @@
 
-export type deckType = {
+export type DeckType = {
     success: boolean,
     deck_id: string,
     shuffled: boolean,

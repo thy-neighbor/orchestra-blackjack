@@ -1,6 +1,5 @@
-
 import { action, observable } from 'mobx';
-import type { deckType } from '../components/GameBoard/deckType';
+import type { DeckType } from '../components/GameBoard/DeckType';
 import type { CardType } from '../components/Card/CardType';
 import axios from 'axios';
 
@@ -21,7 +20,7 @@ interface DeckResponse{
 
 class DeckStore{
     
-    deck : deckType = {
+    deck : DeckType = {
         success: false,
         deck_id: "",
         shuffled: false,
@@ -30,12 +29,12 @@ class DeckStore{
 
     @observable pulledCards : CardType[] = [];
 
-    @action fetchDeck = async () : Promise<deckType> => {
+    @action fetchDeck = async () : Promise<DeckType> => {
         
         try{
             const res = await axios.get<DeckResponse>('https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1');
             this.deck = res.data;
-            console.log("Here is my deck: ",this.deck);
+            //console.log("Here is my deck: ",this.deck);
             return this.deck;
         }catch(error){
             console.error('Error fetching the deck: ', error);
@@ -46,17 +45,16 @@ class DeckStore{
     
     @action drawCards = async (n : number, deckId? : string): Promise<CardType[]> => {
 
-        // if(n > this.deck.remaining){
-        //     if(!this.deck.deck_id){
-        //         await this.deck.deck_id;
-        //     }else{
-        //         await this.fetchDeck();
-        //     }
+        let id : string = deckId ? deckId : this.deck.deck_id;
             
-        // }
-
+        //console.log("REMAINING: ", this.deck.remaining);
         try{
-            const id : string = deckId ? deckId : this.deck.deck_id;
+            if(n > this.deck.remaining){
+                //console.log("NEW DECK ALERTTTT");
+                await this.reShuffle().then(data => {
+                    id = data.deck_id
+                });
+            }
 
             const res = await axios.get<CardResponse>(`https://deckofcardsapi.com/api/deck/${id}/draw/?count=${n}`);
     
@@ -64,7 +62,9 @@ class DeckStore{
     
             newCards.forEach((element)=>{this.pulledCards.push(element)});
             
-            console.log("Pulled cards: ", this.pulledCards);
+            //console.log("Pulled cards: ", this.pulledCards);
+
+            this.deck.remaining = res.data?.remaining;
     
             return newCards;
         }catch(error) { 
@@ -77,6 +77,20 @@ class DeckStore{
     @action startGame = async () : Promise<CardType[]> => {
         
         return this.fetchDeck().then(data => this.drawCards(4 , data.deck_id));
+
+    };
+
+    @action reShuffle = async () : Promise<DeckType> => {
+        
+        try{
+            const res = await axios.get<DeckResponse>(`https://deckofcardsapi.com/api/deck/${this.deck.deck_id}/shuffle/`);
+            this.deck = res.data;
+            //console.log("Here is my shuffled deck: ",this.deck);
+            return this.deck;
+        }catch(error){
+            console.error('Error shuffling the deck: ', error);
+            throw error;
+        }
 
     };
     

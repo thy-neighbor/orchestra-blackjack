@@ -1,0 +1,9 @@
+.GameBoard__Container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.btn.start{
+    width: 165px;
+}

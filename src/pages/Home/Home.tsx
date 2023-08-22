@@ -1,7 +1,5 @@
-
-
 import GameBoard from '../../components/GameBoard/GameBoard';
-import './Home.css'
+import './Home.css';
 
 //type Props = {}
 
@@ -9,7 +7,7 @@ const Home = () => {
   return (
     <div>
         <header className="App-header">
-            Orchestra BlackJack
+            <h1>Orchestra BlackJack</h1>
         </header>
         <GameBoard/>
     </div>

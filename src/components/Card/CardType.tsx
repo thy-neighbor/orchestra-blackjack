@@ -1,9 +1,8 @@
-
 export type CardType = {
     code?: string, 
     image: string,
     images?: imageOptions,
-    value: number, 
+    value: string, 
     suit: string
 }
 
