@@ -1,0 +1,12 @@
+.Player__Container{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 50px 0px 50px;
+}
+
+.Player__Cards{
+    display: flex;
+    gap: 15px;
+
+}
